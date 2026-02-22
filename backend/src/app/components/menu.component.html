@@ -1,0 +1,137 @@
+<div class="container">
+  <div class="header">
+    <h1>Gestione Menù</h1>
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div class="content">
+    <!-- CATEGORIE -->
+    <div class="categories-section">
+      <div class="section-header">
+        <h2>Categorie</h2>
+        <button (click)="openCategoryForm()" class="btn btn-primary">+ Nuova Categoria</button>
+      </div>
+
+      <div class="categories-list">
+        <div 
+          *ngFor="let category of categories"
+          class="category-item"
+          [class.active]="selectedCategoryId === category.id"
+          (click)="selectCategory(category.id)">
+          <div class="category-info">
+            <h4>{{ category.name }}</h4>
+            <p>{{ category.description }}</p>
+          </div>
+          <div class="category-actions">
+            <button (click)="openCategoryForm(category); $event.stopPropagation()" class="btn btn-small">Modifica</button>
+            <button (click)="deleteCategory(category); $event.stopPropagation()" class="btn btn-danger btn-small">Elimina</button>
+          </div>
+        </div>
+      </div>
+
+      <button (click)="selectCategory(null)" class="btn" [class.active]="selectedCategoryId === null">
+        Mostra Tutti i Prodotti
+      </button>
+    </div>
+
+    <!-- PRODOTTI -->
+    <div class="products-section">
+      <div class="section-header">
+        <h2>Prodotti</h2>
+        <button (click)="openProductForm()" class="btn btn-primary">+ Nuovo Prodotto</button>
+      </div>
+
+      <div *ngIf="isLoading" class="loading">
+        <p>Caricamento...</p>
+      </div>
+
+      <div *ngIf="!isLoading && filteredProducts.length === 0" class="no-products">
+        <p>Nessun prodotto trovato</p>
+      </div>
+
+      <div *ngIf="!isLoading" class="products-grid">
+        <div *ngFor="let product of filteredProducts" class="product-card">
+          <div class="product-image">
+            <img *ngIf="product.image_url" [src]="product.image_url" [alt]="product.name" />
+            <div *ngIf="!product.image_url" class="no-image">No Image</div>
+          </div>
+          <div class="product-info">
+            <h4>{{ product.name }}</h4>
+            <p>{{ product.description }}</p>
+            <p class="category">{{ product.category_name }}</p>
+            <p class="price">{{ product.price }} €</p>
+          </div>
+          <div class="product-actions">
+            <button (click)="openProductForm(product)" class="btn btn-small">Modifica</button>
+            <button (click)="deleteProduct(product)" class="btn btn-danger btn-small">Elimina</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALI -->
+  <div *ngIf="showProductForm" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ productForm.id ? 'Modifica Prodotto' : 'Nuovo Prodotto' }}</h2>
+        <button (click)="closeProductForm()" class="close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nome *</label>
+          <input [(ngModel)]="productForm.name" type="text" placeholder="Nome prodotto" />
+        </div>
+        <div class="form-group">
+          <label>Descrizione</label>
+          <textarea [(ngModel)]="productForm.description" placeholder="Descrizione"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Prezzo *</label>
+          <input [(ngModel)]="productForm.price" type="number" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="form-group">
+          <label>Categoria *</label>
+          <select [(ngModel)]="productForm.category_id">
+            <option [value]="null">-- Seleziona categoria --</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>URL Immagine</label>
+          <input [(ngModel)]="productForm.image_url" type="text" placeholder="https://..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeProductForm()" class="btn">Annulla</button>
+        <button (click)="saveProduct()" class="btn btn-primary">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showCategoryForm" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ categoryForm.id ? 'Modifica Categoria' : 'Nuova Categoria' }}</h2>
+        <button (click)="closeCategoryForm()" class="close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nome *</label>
+          <input [(ngModel)]="categoryForm.name" type="text" placeholder="Nome categoria" />
+        </div>
+        <div class="form-group">
+          <label>Descrizione</label>
+          <textarea [(ngModel)]="categoryForm.description" placeholder="Descrizione"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeCategoryForm()" class="btn">Annulla</button>
+        <button (click)="saveCategory()" class="btn btn-primary">Salva</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="dashboard">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <h1>Hamburgeria Staff Panel</h1>
+    </div>
+    <div class="navbar-tabs">
+      <button 
+        [class.active]="activeTab === 'orders'"
+        (click)="switchTab('orders')"
+        class="navbar-item">
+        <i class="icon">📋</i>
+        Ordini
+      </button>
+      <button 
+        [class.active]="activeTab === 'menu'"
+        (click)="switchTab('menu')"
+        class="navbar-item">
+        <i class="icon">🍔</i>
+        Menù
+      </button>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div *ngIf="activeTab === 'orders'" class="tab-content">
+      <app-orders></app-orders>
+    </div>
+    <div *ngIf="activeTab === 'menu'" class="tab-content">
+      <app-menu></app-menu>
+    </div>
+  </div>
+</div>

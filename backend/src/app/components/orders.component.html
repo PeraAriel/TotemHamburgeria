@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="header">
+    <h1>Ordini in Tempo Reale</h1>
+    <button (click)="loadOrders()" class="btn btn-primary">Ricarica</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Caricamento ordini...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="error">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="order-section">
+    <div class="status-filter">
+      <button class="filter-btn" [class.active]="selectedStatus === 'all'" (click)="onStatusChange('all')">
+        Tutti
+      </button>
+      <button *ngFor="let status of statusOptions" 
+        class="filter-btn" 
+        [class.active]="selectedStatus === status"
+        (click)="onStatusChange(status)">
+        {{ statusLabels[status] }}
+      </button>
+    </div>
+
+    <div *ngIf="filteredOrders.length === 0" class="no-orders">
+      <p>Nessun ordine trovato</p>
+    </div>
+
+    <div class="orders-grid">
+      <div *ngFor="let order of filteredOrders" class="order-card" [style.border-left-color]="statusColors[order.status]">
+        <div class="order-header">
+          <div>
+            <h3>Ordine #{{ order.order_number }}</h3>
+            <p class="order-time">{{ order.created_at | date:'short' }}</p>
+          </div>
+          <span class="total-price">{{ order.total_price }} €</span>
+        </div>
+
+        <div class="order-items">
+          <div *ngFor="let item of order.items" class="item">
+            <span class="qty">{{ item.quantity }}x</span>
+            <span class="name">{{ item.name }}</span>
+            <span class="price">{{ (item.unit_price * item.quantity) | number:'1.2-2' }} €</span>
+          </div>
+        </div>
+
+        <div class="order-status">
+          <label>Stato:</label>
+          <select class="status-select" (change)="updateStatus(order, $any($event.target).value)">
+            <option value="pending" [selected]="order.status === 'pending'">In Attesa</option>
+            <option value="preparing" [selected]="order.status === 'preparing'">In Preparazione</option>
+            <option value="ready" [selected]="order.status === 'ready'">Pronto</option>
+            <option value="completed" [selected]="order.status === 'completed'">Completato</option>
+            <option value="cancelled" [selected]="order.status === 'cancelled'">Annullato</option>
+          </select>
+        </div>
+
+        <div class="order-actions">
+          <button (click)="deleteOrder(order)" class="btn btn-danger btn-small">Elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
