@@ -5,7 +5,7 @@ import 'package:totem/models/product.dart';
 
 class ApiService {
   // Configurare questo URL secondo il vostro setup
-  static const String baseUrl = 'http://localhost:5000/api';
+  static const String baseUrl = 'https://automatic-happiness-q7vq7767q66r24g97-5000.app.github.dev/api';
   static const Duration timeout = Duration(seconds: 10);
 
   // === CATEGORIE ===
